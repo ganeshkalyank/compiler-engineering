@@ -9,7 +9,7 @@
 
 %%
 s: e { printf("Valid\n"); };
-e: e op e | '(' op ')' | FUNC '(' e ')' | ID | NUM;
+e: FUNC '(' e ')' | e op e | '(' op ')' | ID | NUM;
 op: '+' | '-' | '*' | '/' ;
 %%
 
