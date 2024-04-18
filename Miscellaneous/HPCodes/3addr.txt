@@ -1,0 +1,52 @@
+LEX:
+
+%{
+#include <stdio.h>
+#include <stdlib.h>
+#include "y.tab.h"
+char ch='a';
+%}
+
+%%
+[0-9]+ {yylval.dval=yytext[0]; return NUM;}
+\n {return 0;}
+. {return yytext[0];}
+%%
+
+char GenCode(char res, char first, char op, char second)
+{
+printf("\n%c = %c %c %c\n",ch,first,op,second);
+return ch++;
+}
+
+YACC:
+%{
+#include <stdio.h>
+#include <stdlib.h>
+%}
+
+%union {char dval;}
+%token <dval> NUM
+%type <dval> E
+%left '+' '-'
+%left  '*' '/'
+
+%%
+S : E {printf("\nt=%c\n",$1);}
+  ;
+E : E'+'E {$$=GenCode($$,$1,'+',$3);}
+  | E'-'E {$$=GenCode($$,$1,'-',$3);}
+  | E'*'E {$$=GenCode($$,$1,'*',$3);}
+  | E'/'E {$$=GenCode($$,$1,'/',$3);}
+  | '('E')' {$$=$2;}
+  | NUM {$$=$1;}
+  ;
+%%
+
+int yywrap(){return 0;}
+void yyerror(char* str){printf("\n%s",str);}
+int main()
+{
+yyparse();
+return 0;
+}

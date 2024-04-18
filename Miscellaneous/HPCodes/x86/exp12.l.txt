@@ -1,0 +1,15 @@
+%{
+#include<stdio.h>
+#include<string.h>
+#include "y.tab.h"
+%}
+
+%%
+[a-z][a-z0-9]*  {strcpy(yylval.var, yytext);return NAME;}
+[+]             {strcpy(yylval.var, yytext);return PLUS;}
+[-]             {strcpy(yylval.var, yytext);return MINUS;}
+[*]             {strcpy(yylval.var, yytext);return MULT;}
+[/]             {strcpy(yylval.var, yytext);return DIVS;}
+[=]             {strcpy(yylval.var, yytext);return EQ;}
+[\n\t]          {return yytext[0];}
+%%
