@@ -1,32 +1,30 @@
 %{
-    #include <stdio.h>
-    #include <stdlib.h>
+#include <stdio.h>
+char c = 'a';
+void yyerror();
 %}
 
-%union {char dval;}
-%token <dval> NUM
-%type <dval> E
+%union {
+  char* txt;
+}
+%token <txt> NUM
+%token <txt> ID
+%type <txt> e
 %left '+' '-'
 %left  '*' '/'
 
 %%
-S : E { printf("\nt=%c\n",$1); }
-  ;
-E : E'+'E { $$ = GenCode($$, $1,'+',$3); }
-  | E'-'E { $$ = GenCode($$, $1,'-',$3); }
-  | E'*'E { $$ = GenCode($$, $1,'*',$3); }
-  | E'/'E { $$ = GenCode($$, $1,'/',$3); }
-  | '('E')' { $$ = $2; }
-  | NUM { $$ = $1; }
-  ;
+st: e { printf("t = %s\n", $1); };
+e: e '+' e { printf("t%c = %s + %s\n", c, $1, $3); sprintf($$, "t%c", c); c++; }
+ | e '-' e { printf("t%c = %s - %s\n", c, $1, $3); sprintf($$, "t%c", c); c++; }
+ | e '*' e { printf("t%c = %s * %s\n", c, $1, $3); sprintf($$, "t%c", c); c++; }
+ | e '/' e { printf("t%c = %s / %s\n", c, $1, $3); sprintf($$, "t%c", c); c++; }
+ | NUM { $$ = $1; };
+ | ID { $$ = $1; };
 %%
 
-int yywrap() {
-    return 0;
-}
-
-void yyerror(char* str) {
-    printf("\n%s",str);
+void yyerror() {
+    printf("invalid\n");
 }
 
 int main() {
